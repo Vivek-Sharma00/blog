@@ -1,0 +1,248 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import { createSupabaseServerClient } from '../../lib/supabase';
+import { slugify } from '../../lib/utils';
+
+const supabase = createSupabaseServerClient(Astro.cookies);
+
+// Server-side auth check
+const { data: { user } } = await supabase.auth.getUser();
+if (!user) return Astro.redirect('/login');
+
+// Role check — must be admin
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+
+if (profile?.role !== 'admin') return Astro.redirect('/');
+
+let formError: string | null = null;
+let formSuccess = false;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const title = (formData.get('title') as string ?? '').trim();
+  const slug = (formData.get('slug') as string ?? '').trim() || slugify(title);
+  const summary = (formData.get('summary') as string ?? '').trim();
+  const content = (formData.get('content') as string ?? '').trim();
+
+  if (!title || !slug || !summary || !content) {
+    formError = 'All fields are required.';
+  } else {
+    const { error } = await supabase.from('posts').insert({
+      title,
+      slug,
+      summary,
+      content,
+      published: true,
+      author_id: user.id,
+    });
+
+    if (error) {
+      formError = error.message.includes('unique') ? 'Slug already exists. Choose a different one.' : error.message;
+    } else {
+      return Astro.redirect(`/posts/${slug}`);
+    }
+  }
+}
+---
+
+<Layout title="New Post · SoloDev Blog" description="Create a new blog post">
+  <Navbar />
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full">
+    <!-- Header -->
+    <div class="mb-8 animate-fade-in">
+      <div class="flex items-center gap-2 mb-1 text-sm text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-slate-900 dark:text-slate-200 font-medium">New Post</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Create New Post</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">Markdown is fully supported in the body.</p>
+    </div>
+
+    {formError && (
+      <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm flex items-center gap-2 animate-slide-up">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {formError}
+      </div>
+    )}
+
+    <form method="POST" id="post-form" class="space-y-6 animate-slide-up">
+      <!-- Title + Slug row -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label for="title" class="label">Title <span class="text-red-500">*</span></label>
+          <input type="text" id="title" name="title" class="input" placeholder="My Awesome Post" required maxlength="200" />
+        </div>
+        <div>
+          <label for="slug" class="label">
+            Slug
+            <span class="ml-1 text-xs text-slate-400 font-normal">(auto-generated if blank)</span>
+          </label>
+          <input type="text" id="slug" name="slug" class="input font-mono text-sm" placeholder="my-awesome-post" maxlength="200"
+            pattern="[a-z0-9]+(?:-[a-z0-9]+)*" />
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div>
+        <label for="summary" class="label">Summary <span class="text-red-500">*</span></label>
+        <textarea id="summary" name="summary" rows="2" class="input resize-none" placeholder="A brief one-liner about the article…" required maxlength="500"></textarea>
+      </div>
+
+      <!-- Body + Preview side-by-side on large screens -->
+      <div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <label for="content" class="label mb-0">Body (Markdown) <span class="text-red-500">*</span></label>
+          <div class="ml-auto flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 text-xs">
+            <button type="button" id="tab-edit" class="px-3 py-1 rounded-md bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium shadow-sm transition-all">
+              Edit
+            </button>
+            <button type="button" id="tab-preview" class="px-3 py-1 rounded-md text-slate-500 dark:text-slate-400 font-medium transition-all hover:bg-slate-50 dark:hover:bg-slate-800">
+              Preview
+            </button>
+            <button type="button" id="tab-split" class="px-3 py-1 rounded-md text-slate-500 dark:text-slate-400 font-medium transition-all hover:bg-slate-50 dark:hover:bg-slate-800 hidden lg:block">
+              Split
+            </button>
+          </div>
+        </div>
+
+        <div id="editor-container" class="grid grid-cols-1 gap-4">
+          <textarea
+            id="content"
+            name="content"
+            rows="22"
+            class="input resize-y font-mono text-sm leading-relaxed min-h-[400px]"
+            placeholder="Write your post in Markdown here...
+
+# Heading 1
+## Heading 2
+
+Regular paragraph text. **Bold**, *italic*, `inline code`.
+
+```js
+const hello = 'world';
+```"
+            required
+          ></textarea>
+          <div id="preview-pane" class="hidden card p-6 min-h-[400px] overflow-auto">
+            <article id="preview-content" class="prose prose-slate dark:prose-invert max-w-none
+              prose-headings:font-bold prose-a:text-brand-600 dark:prose-a:text-brand-400
+              prose-code:text-brand-700 dark:prose-code:text-brand-300">
+              <p class="text-slate-400 dark:text-slate-600 italic">Start typing to see a preview…</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800">
+        <a href="/" class="btn-secondary">Cancel</a>
+        <button type="submit" id="submit-btn" class="btn-primary px-6 py-2.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Publish Post
+        </button>
+      </div>
+    </form>
+  </main>
+</Layout>
+
+<script>
+  // Auto-slug from title
+  const titleInput = document.getElementById('title') as HTMLInputElement;
+  const slugInput = document.getElementById('slug') as HTMLInputElement;
+  let userEditedSlug = false;
+
+  slugInput.addEventListener('input', () => { userEditedSlug = true; });
+
+  titleInput.addEventListener('input', () => {
+    if (!userEditedSlug) {
+      slugInput.value = titleInput.value
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .trim()
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+  });
+
+  // Tabs
+  const tabEdit = document.getElementById('tab-edit') as HTMLButtonElement;
+  const tabPreview = document.getElementById('tab-preview') as HTMLButtonElement;
+  const tabSplit = document.getElementById('tab-split') as HTMLButtonElement;
+  const editorContainer = document.getElementById('editor-container') as HTMLDivElement;
+  const contentArea = document.getElementById('content') as HTMLTextAreaElement;
+  const previewPane = document.getElementById('preview-pane') as HTMLDivElement;
+  const previewContent = document.getElementById('preview-content') as HTMLElement;
+
+  function activeTabStyle(btn: HTMLButtonElement) {
+    [tabEdit, tabPreview, tabSplit].forEach(b => {
+      b?.classList.remove('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-slate-700', 'dark:text-slate-200');
+      b?.classList.add('text-slate-500', 'dark:text-slate-400');
+    });
+    btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+    btn.classList.add('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-slate-700', 'dark:text-slate-200');
+  }
+
+  async function renderPreview() {
+    const md = contentArea.value;
+    if (!md) {
+      previewContent.innerHTML = '<p class="text-slate-400 dark:text-slate-600 italic">Start typing to see a preview…</p>';
+      return;
+    }
+    // Use marked via CDN for client-side preview
+    const { marked } = await import('https://cdn.jsdelivr.net/npm/marked/src/marked.esm.js');
+    previewContent.innerHTML = marked(md) as string;
+  }
+
+  tabEdit?.addEventListener('click', () => {
+    activeTabStyle(tabEdit);
+    editorContainer.classList.remove('lg:grid-cols-2');
+    contentArea.classList.remove('hidden');
+    previewPane.classList.add('hidden');
+  });
+
+  tabPreview?.addEventListener('click', async () => {
+    activeTabStyle(tabPreview);
+    editorContainer.classList.remove('lg:grid-cols-2');
+    contentArea.classList.add('hidden');
+    previewPane.classList.remove('hidden');
+    await renderPreview();
+  });
+
+  tabSplit?.addEventListener('click', async () => {
+    activeTabStyle(tabSplit);
+    editorContainer.classList.add('lg:grid-cols-2');
+    contentArea.classList.remove('hidden');
+    previewPane.classList.remove('hidden');
+    await renderPreview();
+  });
+
+  // Live preview update in split mode
+  contentArea?.addEventListener('input', async () => {
+    if (!previewPane.classList.contains('hidden')) {
+      await renderPreview();
+    }
+  });
+
+  // Submit UX
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  document.getElementById('post-form')?.addEventListener('submit', () => {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+      </svg>
+      Publishing…
+    `;
+  });
+</script>
