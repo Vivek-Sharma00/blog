@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npx --no-install astro build",
+    "build": "astro build",
     "preview": "astro preview"
   },
   "dependencies": {

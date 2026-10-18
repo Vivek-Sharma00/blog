@@ -1,7 +1,6 @@
 [build]
-  command = "npx --no-install astro build"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_FLAGS = "--include=dev"
