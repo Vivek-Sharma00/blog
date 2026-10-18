@@ -1,18 +1,14 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  site: 'https://blog.solodev.co.in',
+  output: 'static',
+  devToolbar: { enabled: false },
   integrations: [
     tailwind({
       applyBaseStyles: false,
     }),
   ],
-  site: 'https://blog.solodev.co.in',
 });

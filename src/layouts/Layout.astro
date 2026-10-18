@@ -1,60 +1,100 @@
 ---
+// Layout.astro — base page shell
+import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 
 interface Props {
-  title?: string;
+  title: string;
   description?: string;
-  image?: string;
+  pubDate?: Date;
 }
 
 const {
-  title = 'SoloDev Blog',
-  description = 'Insights, tutorials, and deep-dives for independent developers.',
-  image = '/og-image.png',
+  title,
+  description = 'A minimalist blog by SoloDev — writing about indie engineering, tools, and building in public.',
+  pubDate,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const fullTitle = title === 'SoloDev Blog' ? title : `${title} · SoloDev Blog`;
+const formattedDate = pubDate
+  ? pubDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : undefined;
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="en" class="">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- Primary -->
-    <title>{fullTitle}</title>
+    <!-- SEO -->
+    <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph / Twitter -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={fullTitle} />
+    <!-- Open Graph -->
+    <meta property="og:type" content={pubDate ? 'article' : 'website'} />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="SoloDev Blog" />
+    {pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Theme: prevent flash of wrong theme -->
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!--
+      Zero-flash theme script.
+      Must be inline and synchronous so it runs before any paint.
+      Reads localStorage; defaults to light mode if no preference stored.
+    -->
     <script is:inline>
       (function () {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (stored === 'dark' || (!stored && prefersDark)) {
-          document.documentElement.classList.add('dark');
-        }
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+          // No else: default is light (no class needed)
+        } catch (_) {}
       })();
     </script>
+
+    <meta name="generator" content={Astro.generator} />
   </head>
-  <body class="min-h-dvh flex flex-col">
-    <slot />
+
+  <body class="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans antialiased transition-colors duration-200">
+    <Navbar />
+
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-neutral-200 dark:border-neutral-800 mt-20">
+      <div class="max-w-[1600px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-neutral-500 dark:text-neutral-500">
+        <span>
+          &copy; {new Date().getFullYear()}
+          <a
+            href="https://blog.solodev.co.in"
+            class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
+          >SoloDev</a>
+        </span>
+        <span>Built with <a href="https://astro.build" class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors">Astro</a> &amp; Tailwind CSS</span>
+      </div>
+    </footer>
   </body>
 </html>

@@ -1,0 +1,80 @@
+---
+// ThemeToggle.astro — smooth animated toggle with rotation
+---
+
+<button
+  id="theme-toggle"
+  aria-label="Toggle dark mode"
+  title="Toggle dark mode"
+  class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 overflow-hidden"
+>
+  <!-- Wrapper for rotation animation -->
+  <span id="toggle-icon" class="flex items-center justify-center transition-transform duration-300">
+    <!-- Sun icon (shown in dark mode) -->
+    <svg
+      id="icon-sun"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="hidden dark:block"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+    </svg>
+
+    <!-- Moon icon (shown in light mode) -->
+    <svg
+      id="icon-moon"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="block dark:hidden"
+      aria-hidden="true"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </span>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  const iconWrapper = document.getElementById('toggle-icon');
+
+  function applyTheme(theme: string) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  btn?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    // Spin animation
+    if (iconWrapper) {
+      iconWrapper.style.transform = 'rotate(180deg)';
+      iconWrapper.style.opacity = '0';
+      setTimeout(() => {
+        applyTheme(isDark ? 'light' : 'dark');
+        iconWrapper.style.transform = 'rotate(0deg)';
+        iconWrapper.style.opacity = '1';
+      }, 150);
+    } else {
+      applyTheme(isDark ? 'light' : 'dark');
+    }
+  });
+</script>

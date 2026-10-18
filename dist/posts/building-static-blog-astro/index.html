@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en" class=""> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><!-- SEO --><title>Building a Static Blog with Astro and Tailwind CSS — SoloDev</title><meta name="description" content="A practical walkthrough of setting up a fast, minimalist blog using Astro's static output mode and Tailwind CSS for styling."><link rel="canonical" href="https://blog.solodev.co.in/posts/building-static-blog-astro/"><!-- Open Graph --><meta property="og:type" content="article"><meta property="og:title" content="Building a Static Blog with Astro and Tailwind CSS — SoloDev"><meta property="og:description" content="A practical walkthrough of setting up a fast, minimalist blog using Astro's static output mode and Tailwind CSS for styling."><meta property="og:url" content="https://blog.solodev.co.in/posts/building-static-blog-astro/"><meta property="og:site_name" content="SoloDev Blog"><meta property="article:published_time" content="2026-10-15T00:00:00.000Z"><!-- Twitter Card --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Building a Static Blog with Astro and Tailwind CSS — SoloDev"><meta name="twitter:description" content="A practical walkthrough of setting up a fast, minimalist blog using Astro's static output mode and Tailwind CSS for styling."><!-- Favicon --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><!-- Preconnect to Google Fonts --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><!--
+      Zero-flash theme script.
+      Must be inline and synchronous so it runs before any paint.
+      Reads localStorage; defaults to light mode if no preference stored.
+    --><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+          // No else: default is light (no class needed)
+        } catch (_) {}
+      })();
+    </script><meta name="generator" content="Astro v4.16.19"><link rel="stylesheet" href="/_astro/index.CUszhlEt.css"><script type="module">const o=document.getElementById("theme-toggle"),t=document.getElementById("toggle-icon");function n(e){e==="dark"?document.documentElement.classList.add("dark"):document.documentElement.classList.remove("dark"),localStorage.setItem("theme",e)}o?.addEventListener("click",()=>{const e=document.documentElement.classList.contains("dark");t?(t.style.transform="rotate(180deg)",t.style.opacity="0",setTimeout(()=>{n(e?"light":"dark"),t.style.transform="rotate(0deg)",t.style.opacity="1"},150)):n(e?"light":"dark")});
+</script></head> <body class="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 font-sans antialiased transition-colors duration-200"> <header class="sticky top-0 z-50 w-full border-b border-neutral-200/60 dark:border-neutral-800/60 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md"> <nav class="max-w-[1600px] mx-auto px-6 h-14 flex items-center justify-between"> <!-- Brand --> <a href="/" class="flex items-center gap-2 no-underline group" aria-label="SoloDev — Home"> <!-- Logo mark --> <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/30 group-hover:scale-105 transition-all duration-200"> <span class="text-white font-black text-sm leading-none select-none">S</span> </div> <span class="font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-150">
+SoloDev
+</span> </a> <!-- Right side --> <div class="flex items-center gap-3"> <a href="/" class="hidden sm:inline-flex text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors duration-150 no-underline font-medium">
+Articles
+</a> <div class="h-4 w-px bg-neutral-200 dark:bg-neutral-700 hidden sm:block"></div> <button id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode" class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 hover:border-neutral-300 dark:hover:border-neutral-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 overflow-hidden"> <!-- Wrapper for rotation animation --> <span id="toggle-icon" class="flex items-center justify-center transition-transform duration-300"> <!-- Sun icon (shown in dark mode) --> <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden dark:block" aria-hidden="true"> <circle cx="12" cy="12" r="4"></circle> <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path> </svg> <!-- Moon icon (shown in light mode) --> <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="block dark:hidden" aria-hidden="true"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </span> </button>  </div> </nav> </header> <main id="main-content" tabindex="-1">   <div class="w-full h-72 sm:h-80 md:h-96 relative overflow-hidden bg-neutral-100 dark:bg-neutral-900"> <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80" alt="Building a Static Blog with Astro and Tailwind CSS" class="w-full h-full object-cover" loading="eager" decoding="async"> <!-- Gradient overlay --> <div class="absolute inset-0 bg-gradient-to-t from-white dark:from-neutral-950 via-white/20 dark:via-neutral-950/20 to-transparent"></div> </div>  <div class="max-w-3xl mx-auto px-6 py-12"> <!-- Back navigation --> <nav class="mb-10" aria-label="Breadcrumb"> <a href="/" class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150 no-underline group"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-0.5 transition-transform duration-150" aria-hidden="true"> <path d="M19 12H5M12 5l-7 7 7 7"></path> </svg>
+All articles
+</a> </nav> <!-- Article header --> <header class="mb-10"> <!-- Tags --> <div class="flex flex-wrap gap-2 mb-5"> <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-full capitalize">
+#astro </span><span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-full capitalize">
+#tailwind </span><span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-full capitalize">
+#jamstack </span> </div> <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-neutral-100 leading-tight mb-5"> Building a Static Blog with Astro and Tailwind CSS </h1> <p class="text-lg sm:text-xl text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6"> A practical walkthrough of setting up a fast, minimalist blog using Astro&#39;s static output mode and Tailwind CSS for styling. </p> <!-- Meta row --> <div class="flex flex-wrap items-center gap-3"> <div class="flex items-center gap-2"> <!-- Avatar --> <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center"> <span class="text-white font-bold text-xs">S</span> </div> <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">SoloDev</span> </div> <span class="text-neutral-300 dark:text-neutral-700">·</span> <time datetime="2026-10-15T00:00:00.000Z" class="text-sm text-neutral-500 dark:text-neutral-400 tabular-nums"> October 15, 2026 </time> <span class="text-neutral-300 dark:text-neutral-700">·</span> <span class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center gap-1"> <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 2 min read
+</span> </div> <!-- Divider --> <div class="mt-8 h-px bg-gradient-to-r from-indigo-200 via-neutral-200 to-transparent dark:from-indigo-900/50 dark:via-neutral-800 dark:to-transparent"></div> </header> <!-- Article body --> <article class="prose prose-neutral dark:prose-invert max-w-none
+             prose-headings:font-bold prose-headings:tracking-tight
+             prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+             prose-h2:mt-12 prose-h2:mb-4
+             prose-h3:mt-8 prose-h3:mb-3
+             prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
+             prose-code:font-mono prose-code:text-sm prose-code:bg-neutral-100 dark:prose-code:bg-neutral-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none prose-code:text-indigo-700 dark:prose-code:text-indigo-300
+             prose-pre:bg-neutral-950 dark:prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800 prose-pre:rounded-xl prose-pre:text-sm prose-pre:shadow-lg
+             prose-img:rounded-xl prose-img:max-w-full prose-img:shadow-md
+             prose-blockquote:border-l-[3px] prose-blockquote:border-indigo-400 dark:prose-blockquote:border-indigo-600 prose-blockquote:text-neutral-600 dark:prose-blockquote:text-neutral-400 prose-blockquote:not-italic prose-blockquote:bg-neutral-50 dark:prose-blockquote:bg-neutral-900/50 prose-blockquote:px-5 prose-blockquote:py-1 prose-blockquote:rounded-r-lg
+             prose-hr:border-neutral-200 dark:prose-hr:border-neutral-800
+             prose-table:text-sm prose-th:font-semibold prose-th:text-neutral-900 dark:prose-th:text-neutral-100
+             prose-thead:border-neutral-300 dark:prose-thead:border-neutral-700
+             prose-strong:text-neutral-900 dark:prose-strong:text-neutral-100 prose-strong:font-semibold
+             prose-li:marker:text-indigo-400"> <p>Welcome to my blog! This first post walks through the key ideas behind building a <strong>zero-server static blog</strong> using <a href="https://astro.build">Astro</a> and Tailwind CSS. No database, no backend — just pure static HTML served directly from a CDN.</p>
+<h2 id="why-astro">Why Astro?</h2>
+<p>Astro ships <strong>zero JavaScript by default</strong>. Every page is pre-rendered at build time into a plain <code>.html</code> file that can live anywhere — Netlify, Vercel, GitHub Pages, or a simple S3 bucket.</p>
+<p>Key advantages at a glance:</p>
+<ul>
+<li><strong>Island Architecture</strong> — interactive components only hydrate when needed</li>
+<li><strong>Content Collections</strong> — type-safe frontmatter with Zod schema validation</li>
+<li><strong>Built-in Markdown</strong> — Shiki syntax highlighting out of the box</li>
+<li><strong>Zero-config SSG</strong> — just set <code>output: 'static'</code> and you’re done</li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<p>A typical Astro blog looks like this:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>src/</span></span>
+<span class="line"><span>├── components/      # Reusable .astro components</span></span>
+<span class="line"><span>├── content/</span></span>
+<span class="line"><span>│   └── blog/        # Your .md / .mdx posts live here</span></span>
+<span class="line"><span>├── layouts/         # Page shell templates</span></span>
+<span class="line"><span>├── pages/</span></span>
+<span class="line"><span>│   ├── index.astro  # Homepage — lists all posts</span></span>
+<span class="line"><span>│   └── posts/</span></span>
+<span class="line"><span>│       └── [slug].astro  # Dynamic route per post</span></span>
+<span class="line"><span>└── styles/</span></span>
+<span class="line"><span>    └── global.css</span></span>
+<span class="line"><span></span></span></code></pre>
+<h2 id="setting-up-tailwind-typography">Setting Up Tailwind Typography</h2>
+<p>Install the official plugin:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> @tailwindcss/typography</span></span>
+<span class="line"></span></code></pre>
+<p>Then wire it up in <code>tailwind.config.mjs</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">  content: [</span><span style="color:#9ECBFF">'./src/**/*.{astro,html,js,ts,md}'</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">  darkMode: </span><span style="color:#9ECBFF">'class'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  plugins: [</span><span style="color:#B392F0">require</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">'@tailwindcss/typography'</span><span style="color:#E1E4E8">)],</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span></code></pre>
+<p>Apply the <code>prose</code> class to your article wrapper:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="astro"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">article</span><span style="color:#B392F0"> class</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"prose prose-neutral dark:prose-invert max-w-none"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">Content</span><span style="color:#E1E4E8"> /></span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">article</span><span style="color:#E1E4E8">></span></span>
+<span class="line"></span></code></pre>
+<h2 id="dark-mode-without-flash">Dark Mode Without Flash</h2>
+<p>The trick to a flicker-free dark mode toggle is a tiny inline script in <code>&#x3C;head></code> that runs <em>before</em> the browser paints:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">script</span><span style="color:#B392F0"> is:inline</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> stored</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> localStorage.</span><span style="color:#B392F0">getItem</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">'theme'</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#E1E4E8"> (stored </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> 'dark'</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    document.documentElement.classList.</span><span style="color:#B392F0">add</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">'dark'</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">script</span><span style="color:#E1E4E8">></span></span>
+<span class="line"></span></code></pre>
+<p>Because it’s inline and synchronous, the correct class is applied before any CSS renders. Simple, effective, and dependency-free.</p>
+<h2 id="whats-next">What’s Next?</h2>
+<p>In upcoming posts, I’ll cover:</p>
+<ol>
+<li><strong>RSS feed generation</strong> with <code>@astrojs/rss</code></li>
+<li><strong>Open Graph images</strong> using Satori</li>
+<li><strong>Reading time estimation</strong> with a tiny utility function</li>
+</ol>
+<p>Stay tuned — and happy coding! 🚀</p> </article> <!-- Footer navigation --> <footer class="mt-16 pt-8 border-t border-neutral-200 dark:border-neutral-800"> <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150 no-underline group"> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-0.5 transition-transform duration-150" aria-hidden="true"> <path d="M19 12H5M12 5l-7 7 7 7"></path> </svg>
+Back to all articles
+</a> </footer> </div>  </main> <footer class="border-t border-neutral-200 dark:border-neutral-800 mt-20"> <div class="max-w-[1600px] mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-neutral-500 dark:text-neutral-500"> <span>
+&copy; 2026 <a href="https://blog.solodev.co.in" class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors">SoloDev</a> </span> <span>Built with <a href="https://astro.build" class="hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors">Astro</a> &amp; Tailwind CSS</span> </div> </footer> </body></html>
