@@ -8,6 +8,9 @@
     "build": "astro build",
     "preview": "astro preview"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.64.7"
+  },
   "dependencies": {
     "astro": "^4.16.0",
     "@astrojs/tailwind": "^5.1.0",
